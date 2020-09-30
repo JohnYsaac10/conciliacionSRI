@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30503.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SRIconciliacion", "SRIconciliacion\SRIconciliacion.csproj", "{3505109C-E005-472C-A534-67C124D1DF17}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3505109C-E005-472C-A534-67C124D1DF17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3505109C-E005-472C-A534-67C124D1DF17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3505109C-E005-472C-A534-67C124D1DF17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3505109C-E005-472C-A534-67C124D1DF17}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {40992856-4CC0-4E2A-AA78-7DE4CA05F74C}
+	EndGlobalSection
+EndGlobal
