@@ -8,16 +8,17 @@ namespace SRIconciliacion.Utils
 {
     public class SriXmlFileManager
     {
-        public List<FileDetail> getAllFiles(Rutas rutas, string institucion, string directPath)
+        public List<FileDetail> GetAllFiles(Rutas rutas, string institucion, string servicio)
         {
             List<FileDetail> fileList = new List<FileDetail>();
 
             foreach (var path in rutas.Paths)
             {
-                var files = Directory.GetFiles(String.IsNullOrEmpty(directPath) ? path.Value : directPath, institucion, SearchOption.TopDirectoryOnly)
-                                      .Where(file => !file.Contains("_OUT")); //add param true (query == b)
+                var files = Directory.GetFiles(String.IsNullOrEmpty(servicio) ? path.Value : rutas.Paths[servicio], institucion, SearchOption.TopDirectoryOnly)
+                                      .Where(file => !file.Contains("_OUT")); 
                 foreach (var filePath in files)
                 {
+                    var serv = path.Key == "MAT" ? "MATRICULACIÓN" : path.Key;
                     var fileName = Path.GetFileName(filePath);
                     fileList.Add(new FileDetail
                     {
@@ -25,12 +26,12 @@ namespace SRIconciliacion.Utils
                         NombreArchivo = fileName,
                         CodIFI = fileName.Contains("ofp") ? fileName.Split('-').Last().Split('.')[0] : fileName.Split('-')[1],
                         Institucion = "",
-                        Servicio = path.Key == "MAT" ? "MATRICULACIÓN" : path.Key,
+                        Servicio = string.IsNullOrEmpty(servicio)? serv : servicio,
                         Usuario = "Admin"
                     });
                 }
 
-                if (!String.IsNullOrEmpty(directPath))
+                if (!String.IsNullOrEmpty(servicio))
                     break;
             }
 
@@ -38,32 +39,22 @@ namespace SRIconciliacion.Utils
         }
 
 
-        public List<FileDetail> getFilesBy(Rutas rutas, string institucion, string servicio)
+        public List<FileDetail> GetFilesBy(Rutas rutas, string institucion, string servicio)
         {
-            if (String.IsNullOrEmpty(institucion) && String.IsNullOrEmpty(servicio))      //00
+            if (String.IsNullOrEmpty(institucion))      //there're two options (service null, service NOT null)
             {
-                return getAllFiles(rutas, "*.*", null);   // get all files
+                return GetAllFiles(rutas, "*.*", servicio);   
             }
 
-            if (!String.IsNullOrEmpty(institucion) && String.IsNullOrEmpty(servicio))      //10
+            if (!String.IsNullOrEmpty(institucion))    //there're two options (service null, service NOT null)
             {
-                return getAllFiles(rutas, "*" + institucion + "*", null);   // get all files by institucion
-            }
-
-            if (String.IsNullOrEmpty(institucion) && !String.IsNullOrEmpty(servicio))      //01
-            {
-                return getAllFiles(rutas, "*.*", rutas.Paths[servicio]);  // get all files by servicio
-            }
-
-            if (!String.IsNullOrEmpty(institucion) && !String.IsNullOrEmpty(servicio))      //11
-            {
-                return getAllFiles(rutas, "*" + institucion + "*", rutas.Paths[servicio]);   // get all files by institucion and servicio
+                return GetAllFiles(rutas, "*" + institucion + "*", servicio);   
             }
 
             return new List<FileDetail>();
         }
 
-        public Rutas CreateFolderOrPaths(string fecha, string baseUrl, bool folderToo)  // format 30/09/2020
+        public Rutas CreateFolderOrPaths(string fecha, string baseUrl, bool createFolder = true)  //fecha format 30/09/2020
         {
             var DateSplited = fecha.Split('/');
             var DateFormated = DateSplited[2] + DateSplited[1] + DateSplited[0];
@@ -81,7 +72,7 @@ namespace SRIconciliacion.Utils
             foreach (var folder in paths)
             {
                 var absolutePath = baseUrl + folder + DateFormated;
-                if (folderToo && !Directory.Exists(absolutePath))
+                if (createFolder && !Directory.Exists(absolutePath))
                 {
                     Directory.CreateDirectory(absolutePath);
                 }
