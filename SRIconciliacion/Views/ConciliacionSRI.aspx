@@ -164,7 +164,7 @@
             var fecha = $("#input_fecha").val();
 
             var dataString = JSON.stringify({
-                fecha: fecha,
+                fecha: stringToDate(fecha),
                 institucion: institucion,
                 servicio: servicio
             });
@@ -183,6 +183,14 @@
                     populateTable(obj);
                 }
             });
+
+            function stringToDate(date){
+                var parts = date.split('-');
+                // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
+                // January - 0, February - 1, etc.
+                var mydate = new Date(parts[2], parts[1] - 1, parts[0]);
+                return mydate.toDateString();
+            }
         }
     </script>
 </body>

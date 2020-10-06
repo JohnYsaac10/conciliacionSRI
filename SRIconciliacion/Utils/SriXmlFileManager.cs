@@ -8,14 +8,16 @@ namespace SRIconciliacion.Utils
 {
     public class SriXmlFileManager
     {
+        public bool Select_OUT_XML = false;
         public List<FileDetail> GetAllFiles(Rutas rutas, string institucion, string servicio)
         {
+            char criterioSplit = Select_OUT_XML ? '_' : '.';
             List<FileDetail> fileList = new List<FileDetail>();
 
             foreach (var path in rutas.Paths)
             {
                 var files = Directory.GetFiles(String.IsNullOrEmpty(servicio) ? path.Value : rutas.Paths[servicio], institucion, SearchOption.TopDirectoryOnly)
-                                      .Where(file => !file.Contains("_OUT")); 
+                                      .Where(file => file.Contains("_OUT")== Select_OUT_XML); 
                 foreach (var filePath in files)
                 {
                     var serv = path.Key == "MAT" ? "MATRICULACIÓN" : path.Key;
@@ -24,7 +26,7 @@ namespace SRIconciliacion.Utils
                     {
                         Fecha = rutas.Fecha,
                         NombreArchivo = fileName,
-                        CodIFI = fileName.Contains("ofp") ? fileName.Split('-').Last().Split('.')[0] : fileName.Split('-')[1],
+                        CodIFI = fileName.Contains("ofp") ? fileName.Split('-').Last().Split(criterioSplit)[0] : fileName.Split('-')[1],
                         Institucion = "",
                         Servicio = string.IsNullOrEmpty(servicio)? serv : servicio,
                         Usuario = "Admin"

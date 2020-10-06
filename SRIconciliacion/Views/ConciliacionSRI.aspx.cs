@@ -10,6 +10,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml.Serialization;
 using SRIconciliacion.Models;
+using System.Globalization;
 
 namespace SRIconciliacion.Views
 {
@@ -64,6 +65,27 @@ namespace SRIconciliacion.Views
         {
             var newRuta = fileManager.CreateFolderOrPaths(fecha, BASE_URL, false);
             
+            var res = fileManager.GetFilesBy(newRuta, institucion, servicio);
+
+            var json = new JavaScriptSerializer().Serialize(new { Ok = true, Data = res });
+
+            return json;
+        }
+
+        [WebMethod]
+        public static string Conciliar(string fecha, string institucion, string servicio)
+        {
+            var tomorrow = Convert.ToDateTime(fecha).AddDays(1).ToString("dd/MM/yyyy");
+            var newRuta = fileManager.CreateFolderOrPaths(tomorrow, BASE_URL, false);
+
+            var ArchivosConciliar = fileManager.GetFilesBy(newRuta, institucion, servicio);
+
+            //llamada a la accion
+
+            ConciliacionManager objConciliar = new ConciliacionManager();
+            objConciliar.Conciliar(newRuta, ArchivosConciliar, false);
+
+            fileManager.Select_OUT_XML = true;
             var res = fileManager.GetFilesBy(newRuta, institucion, servicio);
 
             var json = new JavaScriptSerializer().Serialize(new { Ok = true, Data = res });
