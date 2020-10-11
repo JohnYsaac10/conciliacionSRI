@@ -1,5 +1,9 @@
-﻿using System;
+﻿using SRIconciliacion.Models;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -7,123 +11,96 @@ namespace SRIconciliacion.Utils
 {
     public class ConciliacionService
     {
-        public Fase1 Sp_consulta_conciliacion_mat_getAdquirente(string fecha, string tipo, string codLogMon, string producto)
+        private SqlConnection sqlConnection = new SqlConnection(@"Data Source=DESKTOP-QTOUJLK\SQLEXPRESS;Initial Catalog=task;Integrated Security=True");
+
+        public ConciliacionService()
         {
-            /*
-                CREATE PROCEDURE sp_consulta_conciliacion_mat_getAdquirente
-														@fecha nvarchar(8),
-														@tipo nvarchar(8),
-														@codLogMon nvarchar(25),
-														@producto nvarchar(15)
-                AS
-	                BEGIN
-		                select count (1) as si,lg_sec_adquirente
-		                from serbas..sb_log 
-		                where   lg_fecha_trn in (@fecha) and lg_type_trn=@tipo and ltrim(lg_direccion)=@codLogMon and   
-		                lg_producto=@producto  and lg_cod_resultado='15' and lg_indicador_reverso is null
-		                group by lg_sec_adquirente
-	                END
-                GO;
-             */
-
-
-            if (codLogMon == "12229092020235580663")
+            if(sqlConnection.State == ConnectionState.Open)
             {
-                return new Fase1
-                {
-                    OK = 0,
-                    Secuencial = 123
-                };
+                sqlConnection.Close();
             }
-
-            return new Fase1
-            {
-                OK = 1,
-                Secuencial = 1111
-            };
+            sqlConnection.Open();
         }
 
-        public int Sp_consult_conciliacion_mat_getExrev(string placaCpnCamv, string tipo, int secuencial)
+        public string ConsultaPathFilesSRIConciliacionFacilitoSwitch()
         {
-            /*
-             CREATE PROCEDURE sp_consult_conciliacion_mat_getExrev
-													@placaCpnCamv nvarchar(10),
-													@tipo nvarchar(8),
-													@secuencial INT
-            AS
-	            BEGIN
-		            select count(1) as exrev
-                    from serbas..sb_log
-		            where lg_referencia = @placaCpnCamv and lg_cod_resultado = '15' AND lg_type_trn = @tipo
-		            and lg_indicador_reverso is not null and lg_sec_adquirente = @secuencial
-	            END
-            GO;
+            return "";
+        }
 
-            */
-
-            if (placaCpnCamv == "IS268U")
+        public Result ConsultaReversosRiseCepMat(string fechaPago, string producto)
+        {
+            using (var cmd = new SqlCommand("Spf_consulta_reversos_MAT_RISE_CEP", sqlConnection))
             {
-                return 1;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@fechaPago", fechaPago);
+                cmd.Parameters.AddWithValue("@producto", producto);
+
+                DataTable dt = new DataTable { TableName = "Table" };
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+
+                adapter.Fill(dt);
+
+                var res = ConvertDatatableToXML(dt);
+
+                res = res.Replace("DocumentElement", "Datos");
+
+                return new Result { Data = res };
             }
-            return 0;
         }
-
-
-        public Fase1 Sp_consulta_conciliacion_rise_getAdquirente(string fecha, string tipo, string valorReferencia, string numCompSRI, string producto)
+        public string ConvertDatatableToXML(DataTable dt)
         {
-            /*
-             CREATE PROCEDURE Sp_consulta_conciliacion_rise_getAdquirente
-													    @fecha nvarchar(8),
-														@tipo nvarchar(8),
-														@valorReferencia nvarchar(25),
-														@numCompSRI INT,
-                                                        @producto nvarchar(15)
-            AS
-	            BEGIN
-		            select count(1) as si,lg_sec_adquirente
-                    from serbas..sb_log
-                    where lg_fecha_compensa in (@fecha) and lg_type_trn = @tipo and
-                    lg_referencia = @valorReferencia and convert(numeric, lg_numero_factura)= @numCompSRI
-                    and lg_producto = @producto  and lg_cod_resultado = '00' and lg_indicador_reverso is null
-                    group by lg_sec_adquirente
-	            END
-            GO;
-            */
-            return new Fase1
+            string result;
+            using (StringWriter sw = new StringWriter())
             {
-                OK = 1,
-                Secuencial = 1111
-            };
-
+                dt.WriteXml(sw);
+                result = sw.ToString();
+            }
+            return result;
         }
 
-        public int Sp_consulta_conciliacion_rise_getExrev(string fecha, string valorReferencia, int secuencial)
-        {
+        //store procedure
+        /*
+            Alter procedure Spf_consulta_reversos_MAT_RISE_CEP
+														@fechaPago Varchar(10),
+														@producto varchar(20)
+AS
+BEGIN
+	IF @producto = '0010181010' --MATRICULACION
+	BEGIN
+		select lg_type_trn, lg_fecha_trn, trim(lg_direccion) AS codLogMon, trim(lg_referencia) as lg_referencia
+		from sb_log
+		where lg_fecha_trn in (select * from STRING_SPLIT(@fechaPago, ',')) AND lg_producto=@producto  
+		and lg_cod_resultado='15' and lg_indicador_reverso is not null
+	END
 
-            /*
-             CREATE PROCEDURE sp_consult_conciliacion_rise_getExrev
-                                                    @fecha nvarchar(8),
-													@valorReferencia nvarchar(25),
-													@secuencial INT
-            AS
-	            BEGIN
-		            select count(1) as exrev
-                    from serbas..sb_log
-                    where lg_fecha_compensa in (@fecha) and
-                    lg_referencia = @valorReferencia and lg_cod_resultado = '00' AND SUBSTRING(LG_TYPE_TRN,1,2)= '01'
-                    and lg_indicador_reverso is not null and lg_sec_adquirente = @secuencial;
-	            END
-            GO;
+	IF @producto = '0010011007' --RISE     php(cep)
+	BEGIN
+		select lg_type_trn, lg_fecha_trn, trim(lg_referencia) as lg_referencia, convert(numeric,lg_numero_factura) as lg_numero_factura
+		from sb_log 
+		where lg_fecha_compensa in (select * from STRING_SPLIT(@fechaPago, ','))
+		--and fecha
+		--and lg_type_trn='".$tipo."' 
+		--and lg_referencia='".$valorReferencia."' 
+		--and convert(numeric,lg_numero_factura)= '".$numCompSRI."' 
+		and lg_producto=@producto  and lg_cod_resultado='00' and lg_indicador_reverso is not null
+	END
 
-            */
+	IF @producto = '0010191011' --CEP       php(sri)
+	BEGIN
+		select lg_fecha_trn, lg_type_trn, lg_new_cedruc, lg_referencia, RTRIM(LTRIM(SUBSTRING(LG_DAT_FACTURA,6,25))) as codLogMon
+		from sb_log 
+		where   lg_fecha_trn in (select * from STRING_SPLIT(@fechaPago, ','))
+		--and lg_type_trn='" . $tipo . "' 
+		--and lg_new_cedruc='" . $numeroRuc . "' 
+		--and  lg_referencia='" . $adhesivo . "' 
+		--and RTRIM(LTRIM(SUBSTRING(LG_DAT_FACTURA,6,25)))='" . $codigoLogMonitor . "' 
+		and lg_producto=@producto and lg_cod_resultado='01' and lg_indicador_reverso is not null
+	END
 
-            return 0;
-        }
-    }
+	
+END
 
-    public class Fase1
-    {
-        public int OK { get; set; }
-        public int Secuencial { get; set; }
+         */
     }
 }

@@ -28,11 +28,11 @@ C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIc
 C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\bin\roslyn\VBCSCompiler.exe
 C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\bin\roslyn\VBCSCompiler.exe.config
 C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\bin\Newtonsoft.Json.dll
+C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\bin\Newtonsoft.Json.xml
 C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\obj\Debug\SRIconciliacion.csprojAssemblyReference.cache
 C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\obj\Debug\SRIconciliacion.csproj.CoreCompileInputs.cache
 C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\obj\Debug\SRIconciliacion.csproj.CopyComplete
 C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\obj\Debug\SRIconciliacion.dll
 C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\obj\Debug\SRIconciliacion.pdb
-C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\bin\Newtonsoft.Json.dll
-C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\bin\Newtonsoft.Json.xml
+C:\Users\sanz9\OneDrive\Escritorio\basura\_del_trabajo\ventana_conciliacion\SRIconciliacion\SRIconciliacion\obj\Debug\SRIconciliacion.csprojAssemblyReference.cache
