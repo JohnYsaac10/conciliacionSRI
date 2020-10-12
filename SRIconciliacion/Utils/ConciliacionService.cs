@@ -102,5 +102,37 @@ BEGIN
 END
 
          */
+
+
+        //var posi = "";
+
+
+        /*
+         
+         Create Procedure Spf_consulta_Productos_Instituciones_Ruta
+															@opcion Varchar(10)
+AS
+BEGIN
+	IF @opcion = 'P'
+	BEGIN
+		select ''
+	END
+
+	IF @opcion = 'I'
+	BEGIN
+		select ''
+	END
+
+	IF @opcion = 'R'
+	BEGIN
+		select '' AS Path
+	END
+END
+         
+         
+
+
+        change to 29 de obtubre
+         */
     }
 }
